@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.mybatis.Dao.UserDao">
+
+    <!--结果集映射  id和resultMap映射,当数据库中的属性和类中的属性名字不一样时可以用，type和某个类映射-->
+    <resultMap id="uu" type="uu">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <select id="getUserList" resultMap="uu" >
+        select * from mybatis_User;
+    </select>
+
+
+    <select id="limitUser" resultMap="uu">
+        select * from mybatis_User limit #{startAt},#{pageSize}
+    </select>
+
+
+    <select id="getUserListLike" resultMap="uu" parameterType="string">
+        select * from mybatis_User where name like "%"#{value}"%";
+    </select>
+
+
+    <!--id 对应的接口中方法的名字，resultType是返回值的类型，parameterMap是参数的类型-->
+   <select id="getUserById" resultMap="uu" parameterType="int">
+       select * from mybatis_User where id = #{id};
+   </select>
+
+
+
+    <select id="getUserByName" resultMap="uu" parameterType="string">
+        select * from mybatis_User where name = #{name};
+    </select>
+
+
+
+    <insert id="insertUser" parameterType="uu" >
+
+
+<!--
+               将插入数据的主键返回，返回到user对象中
+
+               SELECT LAST_INSERT_ID()：得到刚insert进去记录的主键值，只适用与自增主键
+
+               keyProperty：将查询到主键值设置到parameterType指定的对象的哪个属性
+               order：SELECT LAST_INSERT_ID()执行顺序，相对于insert语句来说它的执行顺序
+               resultType：指定SELECT LAST_INSERT_ID()的结果类型
+                -->
+        <selectKey keyProperty="id" order="AFTER" resultType="_int">
+            select LAST_INSERT_ID()
+        </selectKey>
+
+
+
+        insert into mybatis_User values(null,#{name});
+    </insert>
+
+
+    <!--如果利用map就可以设置自己设置键，然后使用就可以，map一般在多属性的情况下用，为null的属性就可以不用传入，当方法参数有多个时就得用
+    map了，当参数为某个对象时，并且不想用map那么占位符就是对应的属性的名称，当只有一个参数时占位符就是参数的名字-->
+    <insert id="insertUserMap" parameterType="map" >
+        insert into mybatis_User values(#{ID},#{Name});
+    </insert>
+
+    
+     <update id="updateUser" parameterType="uu">
+         update mybatis_User set name = #{name} where id = #{id};
+     </update>
+
+
+    <delete id="deleteUser" parameterType="int">
+        delete from mybatis_User where id = #{id};
+    </delete>
+</mapper>

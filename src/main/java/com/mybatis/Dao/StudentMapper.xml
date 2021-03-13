@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.mybatis.Dao.StudentMapper">
+
+
+
+    <!--   复杂查询 子查询 方法1-->
+    <select id="getStudentAndTeacher" resultMap="StudentMap">
+        select * from student
+    </select>
+
+    <resultMap id="StudentMap" type="com.mybatis.Bean.Student">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+<!--        对象就用他  javaType 就是对象的类型-->
+        <association property="teacher" column="tid" javaType="com.mybatis.Bean.Teacher" select="getTeacher"/>
+    </resultMap>
+    
+    <select id="getTeacher" resultType="com.mybatis.Bean.Teacher">
+        select * from teacher where id = #{tid}
+    </select>
+
+
+
+
+    <!--   复杂查询 连接查询 方法2-->
+    <select id="getStudentAndTeacher1" resultMap="StudentMap1">
+        select s.name,s.id,t.name tname ,t.id tid from student s join teacher t on t.id = s.tid
+    </select>
+
+    <resultMap id="StudentMap1" type="com.mybatis.Bean.Student">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--  对象就用他  javaType 就是对象的类型-->
+        <association property="teacher" javaType="com.mybatis.Bean.Teacher" >
+<!--            不能直接用t.name得重命名再用-->
+            <result property="name" column="tname"/>
+            <result property="id" column="tid"/>
+        </association>
+    </resultMap>
+
+
+
+</mapper>

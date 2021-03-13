@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE configuration
+        PUBLIC ".//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!--核心配置文件，可以配置多个环境，默认就是的development-->
+<configuration>
+
+    <!--The content of element type "configuration" must match "(properties?,settings?,typeAliases?,typeHandlers?,objectFactory?,objectWrapperFactory?,reflectorFactory?,plugins?,environments?,databaseIdProvider?,mappers?)".-->
+    <!-- xml文件必需按照该顺序写-->
+
+    <!--也可以在底下写属性，当配置文件和属性里面的相同的话就会优先使用配置文件的-->
+    <properties resource="db.properties"/>
+
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+<!--        开启驼峰命名的转换，将数据库的下划线后面的都大写-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+
+    <typeAliases>
+        <!--这个就是直接给类其别名，不能是接口-
+        <typeAlias type="com.mybatis.Bean.User" alias="user"/>-->
+
+        <!--当一个包下的类比较多的时候可以直接写包名，那么类名小写就是他的别名,
+        或者使用注解@Alias(只有在有底下这个的时候才可以用好象是)写别名也可以,-->
+        <package name="com.mybatis.Bean"/>
+
+    </typeAliases>
+
+
+
+    <environments default="development">
+        <!--可以有多个环境 -->
+
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+
+    </environments>
+
+   <mappers>
+<!--         只能使用注解 没有xml文件-->
+        <mapper class="com.mybatis.Dao.UserDaoAnnotation"/>
+
+<!--          只能用xml,如果只想用xml的话就用resource方便，xml文件不用必须和接口放在同一个包下，用class就得有要求，必须和接口放在统一包下
+             同时名字要一致，不用加xml而且注解和xml都可以用-->
+<!--        <mapper resource="com/mybatis/Dao/UserDaoMapper.xml"/>-->
+
+<!--       只能使用xml-->
+        <mapper resource="com/mybatis/Dao/StudentMapper.xml"/>
+<!--        <mapper resource="com/mybatis/Dao/TeacherMapper.xml"/>-->
+
+<!--       底下这个class 是注解和xml都可以使用，xml必须和接口在一个包下同时名字一致-->
+        <mapper class="com.mybatis.Dao.TeacherMapper"/>
+
+<!--        <mapper class="com.mybatis.Dao.StudentMapper"/>-->
+
+
+<!--          这个就只能注解不能xml,因为名字不一致-->
+<!--       <mapper class="com.mybatis.Dao.UserDao"/>-->
+       <mapper class="com.mybatis.Dao.BlogMapper"/>
+
+   </mappers>
+
+</configuration>

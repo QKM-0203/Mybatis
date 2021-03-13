@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.mybatis.Dao.BlogMapper">
+
+    <select id="queryBlog" parameterType="map" resultType="com.mybatis.Bean.Blog">
+        select * from blog
+<!--          where标签会自动判断是不是第一个，如果是第一个就会自动加where并且舍去and,如果没有条件满足就舍去where-->
+        <where>
+          <include refid="if-judge-query"/>
+        </where>
+
+<!--        <where>-->
+<!--&#45;&#45;             相当于switch- case-->
+<!--            <choose>-->
+<!--                <when test="title != null">-->
+<!--                    title = #{title}-->
+<!--                </when>-->
+
+<!--                <when test="author != null">-->
+<!--                    and author = #{author}-->
+<!--                </when>-->
+<!--               <otherwise>-->
+<!--                   and views = #{views}-->
+<!--               </otherwise>-->
+<!--            </choose>-->
+<!--        </where>-->
+
+
+    </select>
+
+
+    <update id="updateBlog" parameterType="map" >
+        update blog
+        <set>
+<!--                    导入sql片段-->
+           <include refid="if-judge-update"/>
+        </set>
+        where id = #{id}
+    </update>
+
+
+<!--    sql片段提高代码的复用性-->
+    <sql id="if-judge-update">
+        <if test="title != null">
+            title = #{title},
+        </if>
+        <if test="author != null">
+            author = #{author}
+        </if>
+    </sql>
+
+    <sql id="if-judge-query">
+        <if test="title != null">
+            title = #{title}
+        </if>
+        <if test="author != null">
+           and author = #{author}
+        </if>
+    </sql>
+
+
+
+    <select id="queryBlogByListId" parameterType="map" resultType="com.mybatis.Bean.Blog">
+        select * from blog
+            <!--当idList为空时，则就不加where也就不遍历集合了，因为不满足条件  select * from blog -->
+        <where>
+            <foreach collection="idList" item="id" open="and (" separator="or" close=")">
+                id = #{id}
+            </foreach>
+        </where>
+    </select>
+
+</mapper>
+
