@@ -6,7 +6,8 @@
 
 <mapper namespace="com.mybatis.Dao.BlogMapper">
 
-    <select id="queryBlog" parameterType="map" resultType="com.mybatis.Bean.Blog">
+    <cache/>
+    <select id="queryBlog" parameterType="map" resultType="blog">
         select * from blog
 <!--          where标签会自动判断是不是第一个，如果是第一个就会自动加where并且舍去and,如果没有条件满足就舍去where-->
         <where>
